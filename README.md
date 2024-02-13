@@ -18,15 +18,15 @@ Nejo T, Wang L, Leung KK, Wang A, Lakshmanachetty S, Gallus M, Kwok DW, Hong C, 
 ## Primary contact: 
 
 **Takahide Nejo, MD, PhD**  
-Postdoctoral Scholar
-University of California, San Francisco, Department of Neurological Surgery
-takahide.nejo@ucsf.edu
+Postdoctoral Scholar  
+University of California, San Francisco, Department of Neurological Surgery  
+takahide.nejo@ucsf.edu  
 
 
-**Hideho Okada, MD, PhD**
-Professor
-University of California, San Francisco, Department of Neurological Surgery
-hideho.okada@ucsf.edu
+**Hideho Okada, MD, PhD**  
+Professor  
+University of California, San Francisco, Department of Neurological Surgery  
+hideho.okada@ucsf.edu  
 
 
 ## Questions about the code: 

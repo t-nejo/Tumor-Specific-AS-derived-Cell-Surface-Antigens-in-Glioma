@@ -8,8 +8,8 @@ rm(list = ls(all.names = TRUE))
 
 # load packages -----------------------------------------------------------
 
-library(tidyverse) ;
-library(tidylog) ;
+library(tidyverse)
+library(tidylog)
 
 
 # dir ---------------------------------------------------------------------
@@ -295,7 +295,7 @@ write_tsv(tcga.exp.data.mean, out.f)
 
 # si ----------------------------------------------------------------------
 
-Sys.time() %>% print() ; 
+Sys.time() %>% print() 
 # 
 
 sessionInfo() %>% print()

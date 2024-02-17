@@ -9,7 +9,6 @@ rm(list = ls(all.names = TRUE)) ;
 
 # load packages -----------------------------------------------------------
 
-# https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/
 library(tidyverse) ;
 library(tidylog)
 library(ensembldb)

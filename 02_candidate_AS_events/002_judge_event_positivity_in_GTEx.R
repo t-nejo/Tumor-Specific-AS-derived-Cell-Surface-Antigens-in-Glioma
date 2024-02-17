@@ -31,7 +31,7 @@ overlap.table <- read_tsv(in.f)
 
 setwd(dir.1) ; 
 in.f <- filename # "gtex_id_annotation_9166.tsv" ; 
-gtex.annot = read_tsv(in.f)
+gtex.annot <- read_tsv(in.f)
 
 
 # check -------------------------------------------------------------------

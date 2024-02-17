@@ -22,16 +22,20 @@ dir.2 <- "~/path/to/output_folder"
 # load data -----------------------------------------------------
 
 setwd(dir.1)
-in.f <- filename # "gtex_9166_n9041_junc_ids_sj_count.tsv"
-sj.count.gtex <- read_tsv(in.f)
+in.f <- filename # "tcga_429_n9041_junc_ids_sj_count.tsv"
+sj.count.tcga <- read_tsv(in.f)
 
 setwd(dir.1)
 in.f <- filename # "overlap_table_9041.tsv"
 overlap.table <- read_tsv(in.f)
 
 setwd(dir.1) ; 
-in.f <- filename # "gtex_id_annotation_9166.tsv" ; 
-gtex.annot <- read_tsv(in.f)
+in.f <- filename # "tcga_glioma_annotation_abs_purity_060.txt" 
+tcga.annot <- read_tsv(in.f, na = c("", "NA"))
+
+setwd(dir.1)
+in.f <- filename # "gtex_9166_n9041_psr.tsv"
+gtex.psr <- read_tsv(in.f)
 
 
 # check -------------------------------------------------------------------
@@ -50,17 +54,25 @@ overlap.table %>% head() %>% print()
 # 5 chr1:+:109816292-109816782 chr1:+:109816292-109816643
 # 6 chr1:+:109816292-109817037 chr1:+:109816292-109816643  
 
+tcga.annot %>% dim()
+# [1] 429   8
+
+tcga.annot %>% head()
+
+gtex.psr %>% dim()
+# [1] 9041    4
+
 
 # define the threshold values -------------------------------------------
 
-THR.C <- 2
-THR.D <- 10
+THR.C <- 10
+THR.D <- 20
 THR.F <- 0.01
 
 
 # obtain count, depth, freq, and judge -------------------------------------------
 
-for(i in 1:nrow(overlap.table.1)){
+for(i in 1:nrow(overlap.table)){
   print(paste0(i, " (", round(i / nrow(overlap.table), 3), ")" ))
   
   JUNC.ID <- overlap.table %>% 
@@ -69,9 +81,9 @@ for(i in 1:nrow(overlap.table.1)){
   JUNC.ID.O <- overlap.table %>% 
     dplyr::slice(i) %>% 
     pull(junc.id.overlap) ; 
-  
+
   if(is.na(JUNC.ID.O)){
-    res.i <- sj.count.gtex %>% 
+    res.i <- sj.count.tcga %>% 
       dplyr::filter(junc.id == JUNC.ID) %>% 
       gather(case, value, -1) %>% 
       spread(junc.id, value) %>% 
@@ -85,9 +97,9 @@ for(i in 1:nrow(overlap.table.1)){
       dplyr::select(junc.id, case, count, depth, freq, judge)
   }else{
     res.i <- bind_rows(
-      sj.count.gtex %>% dplyr::filter(junc.id == JUNC.ID), 
-      sj.count.gtex %>% dplyr::filter(junc.id == JUNC.ID.O)
-    ) %>% 
+      sj.count.tcga %>% dplyr::filter(junc.id == JUNC.ID), 
+      sj.count.tcga %>% dplyr::filter(junc.id == JUNC.ID.O)
+      ) %>% 
       gather(case, value, -1) %>% 
       spread(junc.id, value) %>% 
       dplyr::select(case, count = JUNC.ID, count.o = JUNC.ID.O) %>% 
@@ -96,7 +108,7 @@ for(i in 1:nrow(overlap.table.1)){
       mutate(depth = count + count.o) %>% 
       mutate(freq = round(count / depth, 4)) %>% 
       mutate(freq = ifelse(is.na(freq), 0, freq)) %>% 
-      mutate(judge = ifelse(count >= 2 & depth >= 10 & freq >= 0.01, 1, 0)) %>% 
+      mutate(judge = ifelse(count >= THR.C & depth >= THR.D & freq >= THR.F, 1, 0)) %>% 
       mutate(junc.id = JUNC.ID) %>% 
       dplyr::select(junc.id, case, count, depth, freq, judge)
   }
@@ -117,26 +129,26 @@ for(i in 1:nrow(overlap.table.1)){
   if(i == 1){
     count <- count.i 
     depth <- depth.i 
-    freq <- freq.i 
+    freq <- freq.i  
     judge <- judge.i
   }else{
     count <- bind_rows(count, count.i) 
     depth <- bind_rows(depth, depth.i)
     freq <- bind_rows(freq, freq.i) 
-    judge <- bind_rows(judge, judge.i) 
+    judge <- bind_rows(judge, judge.i)
   }
 }
 
 
 # check -------------------------------------------------------------------
 
-count %>% dim() %>% print() 
+count %>% dim() %>% print()
 depth %>% dim() %>% print() 
 freq %>% dim() %>% print() 
 judge %>% dim() %>% print() 
-# [1]  9041 9167
+# [1] 9041  430
 
-count %>% anyNA() %>% print() 
+count %>% anyNA() %>% print()
 depth %>% anyNA() %>% print() 
 freq %>% anyNA() %>% print() 
 judge %>% anyNA() %>% print() 
@@ -147,34 +159,34 @@ judge %>% anyNA() %>% print()
 
 setwd(dir.2)
 # count
-out.f <- filename # "gtex_9166_n9041_count.tsv"
+out.f <- filename # "tcga_429_n9041_count.tsv"
 write_tsv(count, out.f)
 # depth
-out.f <- filename # "gtex_9166_n9041_depth.tsv"
+out.f <- filename # "tcga_429_n9041_depth.tsv"
 write_tsv(depth, out.f)
 # freq
-out.f <- filename # "gtex_9166_n9041_freq.tsv"
+out.f <- filename # "tcga_429_n9041_freq.tsv"
 write_tsv(freq, out.f)
 # judge
-out.f <- filename # "gtex_9166_n9041_judge.tsv"
+out.f <- filename # "tcga_429_n9041_judge.tsv"
 write_tsv(judge, out.f)
 
 
 # prep 3 subgroups --------------------------------------------------------------------
 
 cases <- list(
-  gtex.annot %>% pull(sample.id), 
-  gtex.annot %>% dplyr::filter(cls == "Brain") %>% pull(sample.id), 
-  gtex.annot %>% dplyr::filter(cls != "Brain") %>% pull(sample.id)
-  ) ;
-names(cases) <- c("GTEx_all_n9166", "GTEx_brain_n1436", "GTEx_non_brain_n7730") ;
+  tcga.annot$case[tcga.annot$cls == "IDHwt"],
+  tcga.annot$case[tcga.annot$cls == "IDH-A"],
+  tcga.annot$case[tcga.annot$cls == "IDH-O"]
+  )
+names(cases) <- c("IDHwt_n166", "IDH-A_n140", "IDH-O_n123")
 
-
+  
 # calculate psr -----------------------------------------------------------
 
 for(i in 1:3){
-  print(i)
-  CASES <- cases[[i]]
+  print(i) ;
+  CASES <- cases[[i]] ;
   
   judge.i <- judge %>% 
     dplyr::select(junc.id, colnames(judge)[is.element(colnames(judge), CASES)])
@@ -185,27 +197,90 @@ for(i in 1:3){
     dplyr::select(junc.id, psr)
 
   colnames(psr.i)[2] <- names(cases)[i]
-  
+
   if(i == 1){
     res.psr <- psr.i
   }else{
     res.psr <- res.psr %>% 
       bind_cols(psr.i %>% dplyr::select(- junc.id) )
   }
-}
+} 
+
+
+# edit -------------------------------------------------------------------
+
+res.psr <- res.psr %>% 
+  mutate(max = apply(res.psr[, -1], 1, max))
 
 
 # check -------------------------------------------------------------------
 
-res.psr %>% nrow() %>% print()
-# [1] 9041
+res.psr %>% dim() %>% print()
+# [1] 9041    5
 
 
 # out ---------------------------------------------------------------------
 
 setwd(dir.2)
-out.f <- filename # "gtex_9166_n9041_psr.tsv"
+out.f <- filename # "tcga_429_n9041_psr.tsv"
 write_tsv(res.psr, out.f)
+
+
+# combine with psr-gtex ---------------------------------------------------------------------
+
+res.psr.merged <- res.psr %>%
+  left_join(gtex.psr, by = "junc.id")
+
+# check
+res.psr.merged %>% dim()
+# [1] 9041    8
+
+res.psr.merged %>% head()
+# # A tibble: 6 × 8
+#   junc.id             IDHwt_n166 `IDH-A_n140` `IDH-O_n123`    max GTEx_all_n9166
+#   <chr>                    <dbl>        <dbl>        <dbl>  <dbl>          <dbl>
+# 1 chr1:+:44086903-44…     0.120        0.0643       0.0163 0.120          0.127 
+# 2 chr1:-:94997968-94…     0            0.0071       0      0.0071         0.0109
+# 3 chr1:+:101702655-1…     0.217        0.157        0.0163 0.217          0.390 
+# 4 chr1:+:101707328-1…     0.0904       0.114        0      0.114          0.0919
+# 5 chr1:+:109816292-1…     0.892        0.979        0.935  0.979          0.359 
+# 6 chr1:+:109816292-1…     0.151        0.564        0.138  0.564          0.189 
+# # … with 2 more variables: GTEx_brain_n1436 <dbl>, GTEx_non_brain_n7730 <dbl>
+
+
+# filter ---------------------------------------------------------------------
+
+res.psr.merged.2 <- res.psr.merged %>%
+  mutate(filter.01 = ifelse(GTEx_all_n9166 < 0.01, "tumor-specific", "not")) %>% 
+  mutate(filter.02 = ifelse(GTEx_all_n9166 < 0.01 & max >= 0.1, "shared", "not"))
+
+
+# check ---------------------------------------------------------------------
+
+res.psr.merged.2 %>% pull(filter.01) %>% table() %>% print()
+          #  not tumor-specific 
+          # 3094           5947 
+
+res.psr.merged.2 %>% pull(filter.02) %>% table() %>% print()
+  #  not shared 
+  # 8975     66 
+
+
+# filter ---------------------------------------------------------------------
+
+res.psr.merged.3 <- res.psr.merged.2 %>%
+  dplyr::filter(filter.02 == "shared") %>% 
+  dplyr::select(- filter.01, -filter.02)
+
+
+# out ---------------------------------------------------------------------
+
+setwd(dir.2)
+out.f <- filename # "tcga_429_n_gtex_9166_n9041_psr_merged_w_label.tsv"
+write_tsv(res.psr.merged.2, out.f)
+
+out.f <- filename # "tcga_429_n_gtex_9166_n9041_psr_merged_filtered.tsv"
+write_tsv(res.psr.merged.3, out.f)
 
 
 # si ----------------------------------------------------------------------
@@ -299,5 +374,5 @@ sessionInfo() %>% print()
 # [87] digest_0.6.29                 xtable_1.8-4                 
 # [89] httpuv_1.6.5                  munsell_0.5.0         
 
-
 # end ---------------------------------------------------------------------
+

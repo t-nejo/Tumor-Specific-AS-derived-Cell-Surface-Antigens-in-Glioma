@@ -204,7 +204,7 @@ res.psr.new %>% nrow() %>% print()
 # out ---------------------------------------------------------------------
 
 setwd(dir.2)
-out.f <- filename # "gtex_9166_psr.tsv")
+out.f <- filename # "gtex_9166_psr.tsv"
 write_tsv(res.psr.new, out.f)
 
 

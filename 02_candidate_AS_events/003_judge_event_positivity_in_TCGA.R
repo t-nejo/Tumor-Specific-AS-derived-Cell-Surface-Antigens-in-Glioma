@@ -31,7 +31,7 @@ overlap.table <- read_tsv(in.f)
 
 setwd(dir.1) ; 
 in.f <- filename # "tcga_glioma_annotation_abs_purity_060.txt" 
-tcga.annot <- read_tsv(in.f, na = c("", "NA"))
+tcga.annot <- read_tsv(in.f)
 
 setwd(dir.1)
 in.f <- filename # "gtex_9166_n9041_psr.tsv"

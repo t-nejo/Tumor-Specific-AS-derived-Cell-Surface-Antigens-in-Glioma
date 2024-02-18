@@ -7,12 +7,17 @@ This repository contains the code used to analyze the data in Nejo et al. bioRxi
 
 ## Key analysis tools:  
 
-[STAR](https://github.com/alexdobin/STAR)  
-[IRFinder](https://github.com/williamritchie/IRFinder)  
-[FLAIR](https://github.com/BrooksLabUCSC/flair)  
-[MSGF+](https://github.com/MSGFPlus/msgfplus)  
-[MASIC](https://github.com/PNNL-Comp-Mass-Spec/MASIC)  
+**[STAR](https://github.com/alexdobin/STAR):** Short-read RNA-seq read alignment and junction detection  
+**[IRFinder](https://github.com/williamritchie/IRFinder):** Intron-retention analysis  
+**[Guppy basecaller](https://community.nanoporetech.com/docs/prepare/library_prep_protocols/Guppy-protocol/v/gpb_2003_v1_revax_14dec2018/guppy-software-overview):** Nanopore long read sequencing base calling  
+**[FLAIR](https://github.com/BrooksLabUCSC/flair):** Nanopore long read sequencing FASTQ analysis  
+**[MSGF+](https://github.com/MSGFPlus/msgfplus):** Peptide spectra database search  
+**[MASIC](https://github.com/PNNL-Comp-Mass-Spec/MASIC):** Quantification of 11-TMT reporter ions  
 
+## Key data visualization tools:  
+**[BioRender](https://www.biorender.com/)**  
+**[Affinity Designer](https://affinity.serif.com/en-us/designer/)**  
+**[R package ggplot2](https://ggplot2.tidyverse.org/)**  
 
 ## Citation
 

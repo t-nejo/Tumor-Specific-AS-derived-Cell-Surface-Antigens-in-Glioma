@@ -5,10 +5,13 @@
 This repository contains the code used to analyze the data in Nejo et al. bioRxiv (2023) "Challenges in the discovery of tumor-specific alternative splicing-derived cell-surface antigens in glioma" (doi: [10.1101/2023.10.26.564156](https://www.biorxiv.org/content/10.1101/2023.10.26.564156v2.full)). In this study, we investigated tumor-specific alternative splicing-derived, cell-surface antigens in glioma, through the analyses of transcriptome data of TCGA-GBM/LGG, GTEx, Mayo-GBM-PDX, as well as the clinical samples of the University of California, San Francisco (UCSF) Brain Tumor Center. Moreover, we conducted nanopore full-length transcript sequencing and proteomics analysis of the CPTAC-GBM project. Our investigation illustrated the diverse characteristics of the tumor-specific AS events and the challenges of antigen exploration due to their notable spatiotemporal heterogeneity and elusive nature at the protein levels. 
 
 
-## Code
+## Key analysis tools:  
 
-- script_junction.R = XXX
-- script_FLAIR.R = XXX
+[STAR](https://github.com/alexdobin/STAR)  
+[IRFinder](https://github.com/williamritchie/IRFinder)  
+[FLAIR](https://github.com/BrooksLabUCSC/flair)  
+[MSGF+](https://github.com/MSGFPlus/msgfplus)  
+[MASIC](https://github.com/PNNL-Comp-Mass-Spec/MASIC)  
 
 
 ## Citation

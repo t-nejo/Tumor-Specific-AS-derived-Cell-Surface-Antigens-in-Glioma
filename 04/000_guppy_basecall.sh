@@ -1,6 +1,6 @@
 #!/bin/sh
 #SBATCH --export=NONE
-#SBATCH --mail-type=END,FAIL,REQEUE
+#SBATCH --mail-type=END,FAIL,REQEUE0
 #SBATCH --mail-user=${YOUR_MAIL_ADRESS}
 #SBATCH --nodes=1 
 #SBATCH --ntasks=16
